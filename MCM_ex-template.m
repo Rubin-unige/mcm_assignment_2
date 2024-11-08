@@ -26,14 +26,16 @@ b_omega_gb = [0,0.0,0.0]';%(x,y,z)
 %% Exercise 1
 
 % Compute the velocity of <g>
-w_v_gw = ....;
+w_omega_bw = a_R_b * b_omega_bw;
+w_omega_gw = w_omega_bw + b_omega_gb;
+w_v_gw = w_r_gw * w_omega_gw;
 
 %% Exercise 2
 
 % Given a point P rigidly attached to <g>
 g_r_Pg = [0.5,0.5,0.0]';
 
-% Comput ethe velocity of P w.r.t. the word
+% Comput ethe velocity of P w.r.t. the world
 w_v_Pw = ;
 
 %% Exercise 3
@@ -42,7 +44,7 @@ w_v_Pw = ;
 % knowing that:
 w_v_gw = [0.5, 0.8, 0.0]';
 w_omega_gw = [0.0,0.0,0.0]';
-w_r_Pg = ...;
+w_r_Pg = g_r_Pg + w_r_gw;
 w_eta_P = ...;
 
 
