@@ -36,7 +36,7 @@ w_v_gw = w_r_gw * w_omega_gw;
 g_r_Pg = [0.5,0.5,0.0]';
 
 % Comput ethe velocity of P w.r.t. the world
-w_v_Pw = ;
+w_v_Pw = w_v_gw + (w_omega_bw + g_R_b * b_w_gb) * g_r_Pg;
 
 %% Exercise 3
 
@@ -70,7 +70,7 @@ for i = t %todo wRg
 
     % Compute the feed-forward velocities
     w_v_Pw = ...;
-    w_omega_Pw = ...;
+    w_omega_Pw = w_v_Pw / w_r_Pw;
     
     % Compute cartesian errors
     w_r_Pb = ...; %lin
