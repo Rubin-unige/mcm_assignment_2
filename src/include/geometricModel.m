@@ -29,17 +29,17 @@ classdef geometricModel < handle
                 error('Not enough input arguments (iTj_0) (jointType)')
             end
         end
-
         function updateDirectGeometry(self, q)
-            %% GetDirectGeometryFunction
-            % This method updates the matrices iTj for the given joint configuration q.
+            %%% GetDirectGeometryFunction
+            % This method update the matrices iTj.
             % Inputs:
-            % q : joints current position (in radians for rotational joints, meters for prismatic joints)
+            % q : joints current position ;
+
             % The function updates:
             % - iTj: vector of matrices containing the transformation matrices from link i to link j for the input q.
             % The size of iTj is equal to (4,4,numberOfLinks)
-        
-            % Iterate through each joint
+            
+           % Iterate through each joint
             for i = 1:self.jointNumber
                 % Extract the current transformation matrix for this joint from iTj_0
                 iTj_current = self.iTj_0(:,:,i); 
@@ -50,12 +50,12 @@ classdef geometricModel < handle
                     % Create new rotation matrix for rotaion around z
                     theta = q(i);
                     % rotation around z
-                    R_z = [cos(theta), -sin(theta), 0;
+                    R_z_qi = [cos(theta), -sin(theta), 0;
                            sin(theta), cos(theta), 0;
                            0, 0, 1];
         
                     % Multiply the zero state rotaion matrix extracted earlier
-                    R_actual = R_zero_state * R_z;
+                    R_actual = R_zero_state * R_z_qi;
         
                     % Update the transformation matrix with the new rotation
                     iTj_current(1:3, 1:3) = R_actual;
@@ -79,22 +79,34 @@ classdef geometricModel < handle
             end
         end
 
-        function [bTk] = getTransformWrtBase(self, k)
-            %% GetTransformWrtBase function
-            % Inputs:
-            % k: the index for which to compute the transformation matrix (frame k)
-            % Outputs:
-            % bTk: transformation matrix from the manipulator base to the k-th joint (or frame k)
-        
-            % Start with the identity matrix for the base frame (Frame 0)
+        function [bTk] = getTransformWrtBase(self,k)
+            %% GetTransformatioWrtBase function
+            % Inputs :
+            % k: the idx for which computing the transformation matrix
+            % outputs
+            % bTk : transformation matrix from the manipulator base to the k-th joint in
+            % the configuration identified by iTj.
+            
+            % base frame identity transformation
             bTk = eye(4);
-        
-            % Multiply the transformation matrices for joints 1 through k
-            for i = 1:k
-                % Multiply the current transformation matrix with the transformation matrix for joint i
+
+            for i = 1:k % iterate till desired k , for instance to 7 
                 bTk = bTk * self.iTj(:,:,i);
             end
         end
+        
+        function [T_3_5] = getTransform3Wrt5(self)
+            %% Get the transformation matrix of frame 3 wrt frame 5
+            % Step 1: Get the transformation matrix from base to frame 3
+            bT3 = self.getTransformWrtBase(3);
+            
+            % Step 2: Get the transformation matrix from base to frame 5
+            bT5 = self.getTransformWrtBase(5);
+            
+            % Step 3: Compute the transformation from frame 3 to frame 5 using matrix division
+            T_3_5 = bT5 \ bT3;  % Equivalent to bT5_inv * bT3 but more efficient
+        end
+
     end
 end
 
