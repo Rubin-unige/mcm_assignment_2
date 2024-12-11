@@ -29,16 +29,9 @@ classdef geometricModel < handle
                 error('Not enough input arguments (iTj_0) (jointType)')
             end
         end
-        function updateDirectGeometry(self, q)
-            %%% GetDirectGeometryFunction
-            % This method update the matrices iTj.
-            % Inputs:
-            % q : joints current position ;
 
-            % The function updates:
-            % - iTj: vector of matrices containing the transformation matrices from link i to link j for the input q.
-            % The size of iTj is equal to (4,4,numberOfLinks)
-            
+        function updateDirectGeometry(self, q)
+            %% GetDirectGeometryFunction
            % Iterate through each joint
             for i = 1:self.jointNumber
                 % Extract the current transformation matrix for this joint from iTj_0
@@ -81,12 +74,6 @@ classdef geometricModel < handle
 
         function [bTk] = getTransformWrtBase(self,k)
             %% GetTransformatioWrtBase function
-            % Inputs :
-            % k: the idx for which computing the transformation matrix
-            % outputs
-            % bTk : transformation matrix from the manipulator base to the k-th joint in
-            % the configuration identified by iTj.
-            
             % base frame identity transformation
             bTk = eye(4);
 
@@ -97,14 +84,14 @@ classdef geometricModel < handle
         
         function [T_3_5] = getTransform3Wrt5(self)
             %% Get the transformation matrix of frame 3 wrt frame 5
-            % Step 1: Get the transformation matrix from base to frame 3
+            % Get the transformation matrix from base to frame 3
             bT3 = self.getTransformWrtBase(3);
             
-            % Step 2: Get the transformation matrix from base to frame 5
+            % Get the transformation matrix from base to frame 5
             bT5 = self.getTransformWrtBase(5);
             
-            % Step 3: Compute the transformation from frame 3 to frame 5 using matrix division
-            T_3_5 = bT5 \ bT3;  % Equivalent to bT5_inv * bT3 but more efficient
+            % Compute the transformation from frame 3 to frame 5
+            T_3_5 = bT5 \ bT3; 
         end
 
     end
